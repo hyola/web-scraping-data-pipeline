@@ -1,4 +1,4 @@
-from dagster import ScheduleDefinition, build_schedule_from_partitioned_job, RunRequest
+from dagster import ScheduleDefinition, sensor, RunRequest, SensorEvaluationContext
 
 from dagster_pipeline.jobs import data_insights_job
 
@@ -7,6 +7,7 @@ daily_schedule = ScheduleDefinition(
     job=data_insights_job,
     cron_schedule="0 0 * * *",  # Run at midnight every day
     execution_timezone="UTC",
+    name="daily_data_insights_schedule",  # Give this a unique name
 )
 
 # Weekly schedule that runs the pipeline once a week (for demonstration purposes)
@@ -14,11 +15,10 @@ weekly_schedule = ScheduleDefinition(
     job=data_insights_job,
     cron_schedule="0 0 * * 0",  # Run at midnight on Sunday
     execution_timezone="UTC",
+    name="weekly_data_insights_schedule",  # Give this a unique name
 )
 
 # Add a sensor for immediate/on-demand runs
-from dagster import sensor, RunRequest, SensorEvaluationContext
-
 @sensor(job=data_insights_job)
 def on_demand_sensor(context: SensorEvaluationContext):
     """
