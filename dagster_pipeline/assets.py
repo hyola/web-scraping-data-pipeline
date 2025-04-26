@@ -13,7 +13,7 @@ from processors.data_processor import DataProcessor
 @asset
 def github_raw_data():
     """Extract data from GitHub repositories related to data science."""
-    scraper = GitHubScraper(limit=10)
+    scraper = GitHubScraper(limit=25)
     repos = scraper.scrape_repositories()
     return Output(
         value=len(repos),
@@ -28,7 +28,7 @@ def github_raw_data():
 @asset
 def kaggle_raw_data():
     """Extract data from Kaggle datasets related to data science."""
-    scraper = KaggleScraper(limit=10)
+    scraper = KaggleScraper(limit=25)
     datasets = scraper.scrape_datasets()
     return Output(
         value=len(datasets),
