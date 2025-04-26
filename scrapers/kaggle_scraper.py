@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+os.environ['KAGGLE_USERNAME'] = os.getenv('KAGGLE_USERNAME')
+os.environ['KAGGLE_KEY'] = os.getenv('KAGGLE_KEY')
+
 class KaggleScraper:
     def __init__(self, limit=100, search_tags=None):
         """
@@ -52,15 +55,15 @@ class KaggleScraper:
                             "title": dataset.title,
                             "url": f"https://www.kaggle.com/datasets/{dataset.ref}",
                             "description": dataset.description,
-                            "total_bytes": dataset.totalBytes,
-                            "size": self._format_size(dataset.totalBytes),
-                            "download_count": dataset.downloadCount,
-                            "view_count": dataset.viewCount,
-                            "vote_count": dataset.voteCount,
-                            "last_updated": dataset.lastUpdated,
-                            "tags": dataset.tags,
-                            "owner_name": dataset.ownerName,
-                            "license_name": dataset.licenseName,
+                            "total_bytes": getattr(dataset, 'totalBytes', None),
+                            "size": self._format_size(getattr(dataset, 'totalBytes', 0)),
+                            "download_count": getattr(dataset, 'downloadCount', None),
+                            "view_count": getattr(dataset, 'viewCount', None),
+                            "vote_count": getattr(dataset, 'voteCount', None),
+                            "last_updated": getattr(dataset, 'lastUpdated', None),
+                            "tags": [tag.name for tag in dataset.tags],
+                            "owner_name": getattr(dataset, 'ownerName', None),
+                            "license_name": getattr(dataset, 'licenseName', None),
                             "file_count": len(dataset.files) if hasattr(dataset, 'files') else None
                         }
                         
@@ -93,5 +96,5 @@ class KaggleScraper:
 
 if __name__ == "__main__":
     # Test the scraper
-    scraper = KaggleScraper(limit=20)
+    scraper = KaggleScraper(limit=10)
     scraper.scrape_datasets()

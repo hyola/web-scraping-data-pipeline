@@ -109,5 +109,5 @@ class GitHubScraper:
 
 if __name__ == "__main__":
     # Test the scraper
-    scraper = GitHubScraper(limit=20)
+    scraper = GitHubScraper(limit=10)
     scraper.scrape_repositories()
